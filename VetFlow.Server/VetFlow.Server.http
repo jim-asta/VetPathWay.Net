@@ -1,0 +1,6 @@
+@VetFlow.Server_HostAddress = http://localhost:5251
+
+GET {{VetFlow.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
