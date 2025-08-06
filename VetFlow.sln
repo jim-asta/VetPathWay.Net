@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36203.30 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "vetflow.client", "vetflow.client\vetflow.client.esproj", "{A7F9DDC4-C166-D0B2-962E-933609268CDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VetFlow.Server", "VetFlow.Server\VetFlow.Server.csproj", "{FB04D328-9CA2-40D2-BB7B-0F36AA66880E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7F9DDC4-C166-D0B2-962E-933609268CDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7F9DDC4-C166-D0B2-962E-933609268CDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7F9DDC4-C166-D0B2-962E-933609268CDB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A7F9DDC4-C166-D0B2-962E-933609268CDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7F9DDC4-C166-D0B2-962E-933609268CDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7F9DDC4-C166-D0B2-962E-933609268CDB}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{FB04D328-9CA2-40D2-BB7B-0F36AA66880E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB04D328-9CA2-40D2-BB7B-0F36AA66880E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB04D328-9CA2-40D2-BB7B-0F36AA66880E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB04D328-9CA2-40D2-BB7B-0F36AA66880E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51B079B1-D89C-4CED-BE51-7F16941E39BC}
+	EndGlobalSection
+EndGlobal
