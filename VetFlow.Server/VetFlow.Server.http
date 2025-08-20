@@ -1,6 +1,6 @@
 # For more info on HTTP files go to https://aka.ms/vs/httpfile
 
-# Just needs any valid ABOS username and password.  basicAuth is the 
+# Just needs any valid VetFlow username and password.  basicAuth is the 
 # Base64 version of user:pass with the basic authorization credentials
 @username = 
 @password = 
