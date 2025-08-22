@@ -1,6 +1,33 @@
-@VetFlow.Server_HostAddress = http://localhost:5251
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
 
-GET {{VetFlow.Server_HostAddress}}/weatherforecast/
-Accept: application/json
+# Just needs any valid VetFlow username and password.  basicAuth is the 
+# Base64 version of user:pass with the basic authorization credentials
+@username = 
+@password = 
+@basicAuth = 
+
+     
+
+# Run this script to capture a jwt for reuse in all the subsequent 
+# scripts.  Visual Studio automatically deflates the token.
+# @name login
+POST {{AuthenticationAddress}}/users/authenticate
+Authorization: Basic {{basicAuth}}
+Content-Type: application/json
+Cache-Control: no-cache
+User-Agent: Resident Eval App
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
 
 ###
+# Test endpoint that was pre-made
+GET {{HostAddress}}/weatherforecast
+Accept: application/json
+
+

@@ -12,15 +12,20 @@ interface WeatherForecast {
   selector: 'app-root',
   templateUrl: './app.component.html',
   standalone: false,
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
   public forecasts: WeatherForecast[] = [];
+  visible: boolean = false;
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.getForecasts();
+  }
+
+  showDialog() {
+    this.visible = true;
   }
 
   getForecasts() {
