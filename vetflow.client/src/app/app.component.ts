@@ -1,43 +1,18 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
-interface WeatherForecast {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
-}
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  standalone: false,
-  styleUrl: './app.component.css',
+  standalone: true,
+  imports: [RouterOutlet],
+  styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  public forecasts: WeatherForecast[] = [];
-  visible: boolean = false;
-
-  constructor(private http: HttpClient) {}
+  constructor() { }
 
   ngOnInit() {
-    this.getForecasts();
   }
-
-  showDialog() {
-    this.visible = true;
-  }
-
-  getForecasts() {
-    this.http.get<WeatherForecast[]>('/weatherforecast').subscribe(
-      (result) => {
-        this.forecasts = result;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
-
-  title = 'vetflow.client';
+  title = 'VetPathWay.Net';
 }

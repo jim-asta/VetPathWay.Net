@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap');
+
+:host ::ng-deep {
+  *:not(.pi):not([class*="pi-"]) { /* Don't override the primeicons */
+    font-family: 'EB Garamond', serif;
+  }
+
+  .p-card {
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .p-button {
+    font-family: 'EB Garamond', serif;
+    font-weight: 600;
+  }
+}

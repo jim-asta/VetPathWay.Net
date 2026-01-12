@@ -1,0 +1,133 @@
+<p-toast position="top-right" [life]="5000" styleClass="p-toast-vetflow"></p-toast>
+
+<!-- Main Card Container -->
+<div class="w-full relative z-10">
+  <p-card [style]="{ overflow: 'hidden' }" styleClass="sm:w-[26.25rem]" class="shadow-2xl sm:w-[26.25rem] border-0 overflow-hidden backdrop-blur-sm bg-white/95 ">
+
+    <!-- Header Section with Logo -->
+    <ng-template pTemplate="header">
+      <div class="flex flex-col items-center pt-8 px-6 bg-gradient-to-br from-orange-500 to-amber-500">
+        <!-- Mobile: 4rem (w-16), Desktop: 5rem (w-20) -->
+        <div class="w-16 h-16 sm:w-24 sm:h-24 bg-white rounded-full flex items-center justify-center shadow-lg mb-4">
+          <img src="assets/images/VetFlow.png" alt="VetPathWay Logo" class="w-10 h-10 sm:w-20 sm:h-20 object-contain" />
+        </div>
+        <!-- Mobile: text-2xl (1.5rem), Desktop: text-3xl -->
+        <h2 class="text-2xl sm:text-3xl text-center font-bold text-white mb-2">Create Account</h2>
+        <p class="text-orange-50 text-center text-sm">Enter a email and password to create an account.</p>
+      </div>
+    </ng-template>
+
+    <!-- Login Form Content -->
+    <div class="p-8">
+      <form [formGroup]="createAccountForm" (ngSubmit)="onSubmit()" class="createAccountForm flex flex-col space-y-6">
+
+        <!-- Email Input -->
+        <div class="flex flex-col gap-2">
+          <label for="email" class="text-sm font-semibold text-gray-700">
+            Email Address
+          </label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-envelope text-gray-400"></i>
+            <input pInputText
+                   id="email"
+                   name="email"
+                   type="email"
+                   formControlName="email"
+                   autocomplete="off"
+                   placeholder="you@example.com"
+                   class="p-inputtext-vetflow w-full pl-10 pr-4 py-3 rounded-lg border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200" />
+          </span>
+          @if (this.email?.invalid && (this.email?.touched || this.email?.dirty)) {
+          <div>
+            @if(email?.hasError('required')) {
+            <p-message severity="error"
+                       text="Email is required"
+                       styleClass="text-xs"></p-message>
+            }
+
+            @if(email?.hasError('email')) {
+            <p-message severity="error"
+                       text="Invalid email format"
+                       styleClass="text-xs"></p-message>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Password Input -->
+        <div class="flex flex-col gap-2">
+          <label for="password" class="text-sm font-semibold text-gray-700">
+            Password
+          </label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock text-gray-400 inline-block"></i>
+            <p-password [toggleMask]="true" [feedback]="false"
+                        formControlName="password"
+                        autocomplete="new-password"
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Enter your password"
+                        styleClass="w-full"
+                        class="p-password-vetflow"
+                        inputStyleClass="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200" />
+          </span>
+          @if (this.password?.invalid && (this.password?.touched || this.password?.dirty)) {
+          <div>
+            @if(password?.hasError('required')) {
+            <p-message severity="error"
+                       text="Password is required"
+                       styleClass="text-xs"></p-message>
+            }
+
+            @if(password?.hasError('minlength')) {
+            <p-message severity="error"
+                       text="Password must be at least 8 characters"
+                       styleClass="text-xs"></p-message>
+            }
+            @if(password?.hasError('minCategories')) {
+            <p-message severity="error"
+                       text="Password not strong enough"
+                       styleClass="text-xs"></p-message>
+            }
+          </div>
+          }
+          <app-password-strength [control]="password"
+                                 [requirements]="{ uppercase: true, lowercase: true, numbers: true, symbols: true, reqCategories: 3 }" />
+
+
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock text-gray-400 inline-block"></i>
+            <p-password [toggleMask]="true" [feedback]="false"
+                        formControlName="passwordConfirm"
+                        autocomplete="new-password"
+                        id="passwordConfirm"
+                        name="passwordConfirm"
+                        type="passwordConfirm"
+                        placeholder="Confirm your password"
+                        styleClass="w-full"
+                        class="p-password-vetflow"
+                        inputStyleClass="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200" />
+          </span>
+          @if (this.passwordConfirm?.invalid && !(!this.passwordConfirm?.value && !this.password?.value)) {    <!-- Don't show if neither has a value (initial load)-->
+          <div>
+            @if(passwordConfirm?.hasError('passwordMismatch')) {
+            <p-message severity="error"
+                       text="Passwords must match"
+                       styleClass="text-xs"></p-message>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Submit Button -->
+        <p-button type="submit"
+                  label="Create Account"
+                  icon="pi pi-sign-in"
+                  [loading]="isLoading"
+                  [disabled]="createAccountForm.invalid || isLoading"
+                  styleClass="w-full justify-center py-3 px-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+        </p-button>
+      </form>
+    </div>
+  </p-card>
