@@ -1,0 +1,17 @@
+p-progressbar {
+  &.progress-green .p-progressbar-vetflow .p-progressbar-value {
+    @apply bg-green-500;
+  }
+
+  &.progress-amber .p-progressbar-vetflow .p-progressbar-value {
+    @apply bg-amber-500;
+  }
+
+  &.progress-orange .p-progressbar-vetflow .p-progressbar-value {
+    @apply bg-orange-500;
+  }
+
+  &.progress-gray .p-progressbar-vetflow .p-progressbar-value {
+    @apply bg-gray-300;
+  }
+}

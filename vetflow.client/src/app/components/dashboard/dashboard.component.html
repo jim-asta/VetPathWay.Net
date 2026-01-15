@@ -1,0 +1,147 @@
+<div class="min-h-screen bg-gray-50">
+  <p-toast></p-toast>
+
+  <!-- Navigation Bar -->
+  <p-menubar [model]="menuItems"
+             styleClass="border-0 shadow-md mb-6 px-6 py-4 bg-white">
+
+    <ng-template pTemplate="start">
+      <div class="flex items-center">
+        <i class="pi pi-home text-blue-600 text-2xl mr-3"></i>
+        <span class="text-xl font-bold text-gray-800">My App</span>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="end">
+      <div class="flex items-center space-x-4">
+        <span class="text-sm text-gray-600">Welcome, User!</span>
+        <p-button icon="pi pi-sign-out"
+                  label="Logout"
+                  severity="secondary"
+                  outlined="true"
+                  (onClick)="logout()"
+                  styleClass="text-sm" />
+      </div>
+    </ng-template>
+  </p-menubar>
+
+  <!-- Main Content -->
+  <div class="container mx-auto px-6">
+    <!-- Welcome Section -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
+      <p class="text-gray-600">Welcome to your application dashboard</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <p-card styleClass="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0 shadow-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-blue-100 text-sm mb-1">Total Users</p>
+            <h3 class="text-2xl font-bold">1,234</h3>
+          </div>
+          <i class="pi pi-users text-3xl text-blue-200"></i>
+        </div>
+      </p-card>
+
+      <p-card styleClass="bg-gradient-to-r from-green-500 to-green-600 text-white border-0 shadow-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-green-100 text-sm mb-1">Revenue</p>
+            <h3 class="text-2xl font-bold">$45,678</h3>
+          </div>
+          <i class="pi pi-dollar text-3xl text-green-200"></i>
+        </div>
+      </p-card>
+
+      <p-card styleClass="bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0 shadow-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-purple-100 text-sm mb-1">Orders</p>
+            <h3 class="text-2xl font-bold">892</h3>
+          </div>
+          <i class="pi pi-shopping-cart text-3xl text-purple-200"></i>
+        </div>
+      </p-card>
+
+      <p-card styleClass="bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0 shadow-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-orange-100 text-sm mb-1">Growth</p>
+            <h3 class="text-2xl font-bold">23.5%</h3>
+          </div>
+          <i class="pi pi-chart-line text-3xl text-orange-200"></i>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Recent Activity -->
+      <div class="lg:col-span-2">
+        <p-card header="Recent Activity" styleClass="shadow-md border-0">
+          <div class="space-y-4">
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+              <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                <i class="pi pi-user text-white"></i>
+              </div>
+              <div class="flex-1">
+                <p class="font-medium text-gray-800">New user registered</p>
+                <p class="text-sm text-gray-500">5 minutes ago</p>
+              </div>
+            </div>
+
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+              <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                <i class="pi pi-shopping-cart text-white"></i>
+              </div>
+              <div class="flex-1">
+                <p class="font-medium text-gray-800">Order #1234 completed</p>
+                <p class="text-sm text-gray-500">15 minutes ago</p>
+              </div>
+            </div>
+
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+              <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center mr-4">
+                <i class="pi pi-chart-bar text-white"></i>
+              </div>
+              <div class="flex-1">
+                <p class="font-medium text-gray-800">Monthly report generated</p>
+                <p class="text-sm text-gray-500">1 hour ago</p>
+              </div>
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="lg:col-span-1">
+        <p-card header="Quick Actions" styleClass="shadow-md border-0">
+          <div class="space-y-3">
+            <p-button label="Add New User"
+                      icon="pi pi-plus"
+                      styleClass="w-full justify-start p-3 bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
+                      outlined="true"
+                      (onClick)="testApiConnection()" />
+
+            <p-button label="View Reports"
+                      icon="pi pi-chart-line"
+                      styleClass="w-full justify-start p-3 bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+                      outlined="true" />
+
+            <p-button label="Settings"
+                      icon="pi pi-cog"
+                      styleClass="w-full justify-start p-3 bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100"
+                      outlined="true" />
+
+            <p-button label="Support"
+                      icon="pi pi-question-circle"
+                      styleClass="w-full justify-start p-3 bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100"
+                      outlined="true" />
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>

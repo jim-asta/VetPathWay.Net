@@ -1,0 +1,10 @@
+input.p-inputtext-vetflow {
+  &.ng-invalid.ng-touched,
+  &.ng-invalid.ng-dirty {
+    @apply border-red-400;
+
+    &:enabled:enabled:focus {
+      @apply border-red-400;
+    }
+  }
+}

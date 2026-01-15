@@ -1,0 +1,24 @@
+@use "primeicons/primeicons.css";
+@use "assets/styles/primeng-styles-vetflow/p-toast-vetflow.scss";
+@use "assets/styles/primeng-styles-vetflow/p-progressbar-vetflow.scss";
+@use "assets/styles/primeng-styles-vetflow/p-password-vetflow.scss";
+@use "assets/styles/primeng-styles-vetflow/p-inputtext-vetflow.scss";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  --font-primary: 'Nunito Sans', sans-serif;
+}
+
+body {
+  font-family: var(--font-primary);
+}
+
+body p-checkbox:has(+ label) { /* Baseline fix for PrimeNG Checkboxes with our font. Style the checkbox only if a label follows it */
+  transform: translateY(-1.5px);
+}

@@ -1,0 +1,274 @@
+<div class="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-orange-100 py-12 px-4">
+  <div class="max-w-4xl mx-auto">
+    <p-card styleClass="shadow-xl">
+      <ng-template pTemplate="header">
+        <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-8 text-center">
+          <div class="w-20 h-20 bg-white rounded-full mx-auto mb-4 flex items-center justify-center">
+            <i class="pi pi-file-edit text-orange-500 text-4xl"></i>
+          </div>
+          <h1 class="text-4xl font-bold text-white mb-2">Terms of Service</h1>
+          <p class="text-orange-100">Effective: {{ effectiveDate | date:'longDate' }}</p>
+          <p-tag value="Version 1.0" severity="info" styleClass="mt-2 bg-orange-200 text-orange-900"></p-tag>
+        </div>
+      </ng-template>
+
+
+      <div class="p-6 space-y-8">
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-file-edit mr-2"></i>Agreement</h2>
+          <p class="text-gray-700 leading-relaxed mb-3 pl-4">
+            By accessing or using VetPathWay.Net's veterinary practice management software, you agree
+            to be bound by these Terms of Service. If you disagree with any part of these terms, you may
+            not access the Service. These terms constitute a legally binding agreement between you and
+            VetPathWay.Net.
+          </p>
+          <p-message severity="warn" styleClass="ml-4">
+            <span class="text-sm">These terms constitute a legally binding agreement between you and VetPathWay.Net.</span>
+          </p-message>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-money-bill mr-2"></i>Service Plans</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pl-4">
+            <div *ngFor="let plan of pricingPlans" class="border rounded-lg p-6 hover:shadow-lg transition-shadow">
+              <h3 class="text-2xl font-bold text-gray-800 mb-2">{{ plan.name }}</h3>
+              <div class="text-3xl font-bold text-orange-600 mb-3">{{ plan.price }}</div>
+              <p-tag [value]="plan.patients" severity="success" styleClass="mb-4 bg-orange-100 text-orange-700"></p-tag>
+              <p class="text-gray-700 text-sm mt-4 leading-relaxed">{{ plan.description }}</p>
+            </div>
+          </div>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-shield mr-2"></i>Usage Terms</h2>
+          <div class="space-y-6 pl-4">
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Acceptable Use</h3>
+              <p class="text-gray-700 leading-relaxed">
+                Use VetPathWay.Net only for lawful veterinary practice management. Do not attempt to breach security,
+                reverse engineer the Service, or engage in any activities that could harm the platform or other users.
+              </p>
+            </div>
+            <p-divider></p-divider>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Account Security</h3>
+              <p class="text-gray-700 leading-relaxed">
+                You are responsible for maintaining the confidentiality of your credentials and for all activities
+                that occur under your account. Notify us immediately of any unauthorized access.
+              </p>
+            </div>
+            <p-divider></p-divider>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Data Accuracy</h3>
+              <p class="text-gray-700 leading-relaxed">
+                You warrant that all information provided is accurate, current, and complete. You must update
+                information as necessary to maintain accuracy.
+              </p>
+            </div>
+            <p-divider></p-divider>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Compliance</h3>
+              <p class="text-gray-700 leading-relaxed">
+                You must comply with all applicable laws, including HIPAA, state veterinary regulations, and
+                data protection laws relevant to your jurisdiction.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-users mr-2"></i>Responsibilities</h2>
+          <div class="space-y-6 pl-4">
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Your Responsibilities</h3>
+              <p class="text-gray-700 leading-relaxed">
+                Maintain confidentiality of account credentials and ensure they are not shared inappropriately.
+                Ensure accurate and up-to-date practice information is maintained in the system. Comply with
+                applicable veterinary regulations and professional standards. Use the Service lawfully and ethically,
+                respecting the rights of others. Promptly notify us of any security breaches or suspected unauthorized access.
+              </p>
+            </div>
+            <p-divider></p-divider>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Our Responsibilities</h3>
+              <p class="text-gray-700 leading-relaxed">
+                Maintain 99.9% uptime service level agreement for Enterprise plan subscribers. Ensure full HIPAA
+                compliance and implement robust data security measures. Provide technical support according to your
+                subscription plan level. Protect your data with military-grade encryption and automated backups.
+                Notify you promptly of any material service changes or security incidents.
+              </p>
+            </div>
+            <p-divider></p-divider>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Data Ownership</h3>
+              <p-message severity="info" styleClass="mb-3">
+                <span class="text-sm font-semibold">You retain full ownership of all data entered into VetPathWay.Net.</span>
+              </p-message>
+              <p class="text-gray-700 leading-relaxed">
+                VetPathWay.Net acts as a data processor on your behalf. You may export your data at any time in standard
+                formats. Upon termination, we provide a 30-day grace period for data export before permanent deletion.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-wallet mr-2"></i>Payment Terms</h2>
+          <div class="space-y-6 pl-4">
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Billing</h3>
+              <p class="text-gray-700 leading-relaxed">
+                Subscription fees are billed monthly in advance unless you select annual billing. All prices are
+                in USD and exclude applicable taxes. We accept credit card, ACH, and wire transfer for Enterprise
+                customers. Failed payments may result in service suspension after a grace period.
+              </p>
+            </div>
+            <p-divider></p-divider>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Refund Policy</h3>
+              <p class="text-gray-700 leading-relaxed mb-4">
+                We offer a 30-day money-back guarantee for new customers. Refunds are prorated based on unused
+                service time for annual subscriptions. Contact our support team to initiate a refund request.
+              </p>
+              <p-button label="Request Refund" icon="pi pi-replay" [outlined]="true" severity="secondary"></p-button>
+            </div>
+            <p-divider></p-divider>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Price Changes</h3>
+              <p class="text-gray-700 leading-relaxed">
+                We reserve the right to modify pricing with 30 days' advance notice. Existing customers are
+                grandfathered at their current rate for 12 months after any price changes take effect.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-exclamation-triangle mr-2"></i>Liability</h2>
+          <div class="space-y-6 pl-4">
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Service Warranties</h3>
+              <p class="text-gray-700 leading-relaxed mb-4">
+                VetPathWay.Net provides the Service with the following commitments to ensure reliability and security
+                for your veterinary practice.
+              </p>
+              <div class="space-y-4">
+                <div class="border-l-4 border-orange-500 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-1">Uptime Commitment</h4>
+                  <p class="text-gray-700 text-sm">99.9% availability for Enterprise plans with service credits for violations.</p>
+                </div>
+                <div class="border-l-4 border-orange-500 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-1">Security Standards</h4>
+                  <p class="text-gray-700 text-sm">SOC 2 Type II certified with regular security audits and penetration testing.</p>
+                </div>
+                <div class="border-l-4 border-orange-500 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-1">HIPAA Compliance</h4>
+                  <p class="text-gray-700 text-sm">Full compliance with HIPAA regulations for protected health information.</p>
+                </div>
+                <div class="border-l-4 border-orange-500 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-1">Data Backups</h4>
+                  <p class="text-gray-700 text-sm">Daily automated backups with geo-redundant storage across multiple regions.</p>
+                </div>
+              </div>
+            </div>
+            <p-divider></p-divider>
+            <p-message severity="error" styleClass="w-full">
+              <div class="space-y-2">
+                <strong>Limitation of Liability</strong>
+                <p class="text-sm">
+                  VetPathWay.Net's liability is limited to the amount paid in the 12 months preceding the claim.
+                  We are not liable for indirect, incidental, or consequential damages.
+                </p>
+              </div>
+            </p-message>
+          </div>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-sign-out mr-2"></i>Termination</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pl-4">
+            <div class="bg-blue-50 p-6 rounded-lg">
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">By You</h3>
+              <p class="text-gray-700 leading-relaxed mb-4">
+                Cancel anytime from your account settings. No penalties or fees for cancellation. Access your
+                account settings, navigate to subscription management, cancel your subscription, and export
+                your data before the end of the billing period.
+              </p>
+            </div>
+            <div class="bg-orange-50 p-6 rounded-lg">
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">By Us</h3>
+              <p class="text-gray-700 leading-relaxed mb-4">
+                We may terminate for violations with 30 days' notice, or immediately for severe breaches.
+                Reasons include non-payment, terms violation, fraudulent activity, or legal requirements.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-book mr-2"></i>Legal</h2>
+          <div class="space-y-6 pl-4">
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Governing Law</h3>
+              <p class="text-gray-700 leading-relaxed">
+                These Terms are governed by the laws of the State of Delaware, USA, without regard to conflict
+                of law principles. Any legal action must be brought in Delaware courts.
+              </p>
+            </div>
+            <p-divider></p-divider>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Dispute Resolution</h3>
+              <p class="text-gray-700 leading-relaxed mb-3">
+                Disputes shall be resolved through binding arbitration in accordance with the American Arbitration
+                Association rules. Each party bears their own costs unless otherwise determined by the arbitrator.
+              </p>
+              <p-tag value="Arbitration Required" severity="warning" styleClass="bg-yellow-100 text-yellow-800"></p-tag>
+            </div>
+            <p-divider></p-divider>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Intellectual Property</h3>
+              <p class="text-gray-700 leading-relaxed mb-3">
+                VetPathWay.Net core software is open source under MIT License. The VetPathWay.Net brand, trademarks, and
+                proprietary features remain our property and may not be used without permission.
+              </p>
+              <p-button label="View License" icon="pi pi-external-link" [text]="true" styleClass="text-orange-600"></p-button>
+            </div>
+            <p-divider></p-divider>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800 mb-3">Changes to Terms</h3>
+              <p class="text-gray-700 leading-relaxed">
+                We may update these Terms with 30 days' notice via email. Continued use after changes take
+                effect constitutes acceptance of updated terms.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <ng-template pTemplate="footer">
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-t">
+          <div class="text-sm text-gray-600">
+            Questions? Contact <a href="mailto:legal@vetpathway.net" class="text-orange-600 hover:underline font-semibold">legal&#64;vetpathway.net</a>
+          </div>
+          <div class="flex gap-3">
+            <p-button label="Print" icon="pi pi-print" [outlined]="true" severity="secondary" (onClick)="print()"></p-button>
+            <p-button label="I Agree" icon="pi pi-check" styleClass="bg-orange-500 border-orange-500" (onClick)="acceptTerms()"></p-button>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+</div>

@@ -1,0 +1,173 @@
+<div class="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-orange-100 py-12 px-4">
+  <div class="max-w-4xl mx-auto">
+    <p-card styleClass="shadow-xl">
+      <ng-template pTemplate="header">
+        <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-8 text-center">
+          <div class="w-20 h-20 bg-white rounded-full mx-auto mb-4 flex items-center justify-center">
+            <i class="fa-solid fa-shield-dog fa-2xs text-orange-500"></i>
+          </div>
+          <h1 class="text-4xl font-bold text-white mb-2">Privacy Policy</h1>
+          <p class="text-orange-100">Last updated: {{ lastUpdated | date:'longDate' }}</p>
+        </div>
+      </ng-template>
+
+      <div class="p-6 space-y-8">
+        <section>          
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-database mr-2"></i>Information We Collect</h2>
+          <p class="text-gray-700 leading-relaxed mb-3 pl-4">
+            VetPathWay.Net collects practice information including name, address, and contact details.
+            We gather user account data such as email, name, and credentials to provide our services. Patient
+            and client records containing veterinary data are stored securely in our system. Billing and payment
+            information is collected for subscription management. Usage analytics and system logs help us improve
+            the platform and ensure optimal performance for all users.
+          </p>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-cog mr-2"></i>How We Use Your Information</h2>
+          <p class="text-gray-700 leading-relaxed mb-3 pl-4">
+            Your information enables us to provide and maintain VetPathWay.Net services effectively. We process payments
+            and manage subscriptions to ensure uninterrupted access. Service updates and notifications keep you
+            informed about important changes. Through analysis of usage patterns, we continuously improve our
+            software and user experience. All processing adheres to HIPAA compliance standards and maintains the
+            highest security protocols.
+          </p>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-shield mr-2"></i>HIPAA Compliance</h2>
+          <p-message severity="info" styleClass="mb-4" icon="pi pi-shield">
+            <span class="font-semibold">VetPathWay.Net is HIPAA compliant and maintains SOC 2 Type II certification.</span>
+          </p-message>
+          <p class="text-gray-700 leading-relaxed pl-4">
+            We implement comprehensive administrative, physical, and technical safeguards to protect health
+            information. All data undergoes encryption at rest using Transparent Data Encryption and in transit
+            using TLS 1.3 protocols. Stringent access controls combined with detailed audit logs ensure data
+            integrity and security across all operations.
+          </p>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-lock mr-2"></i>Data Storage and Security</h2>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <p-chip label="Azure SQL Database" styleClass="bg-orange-100 text-orange-700"></p-chip>
+            <p-chip label="Encryption at Rest" styleClass="bg-orange-100 text-orange-700"></p-chip>
+            <p-chip label="TLS 1.3" styleClass="bg-orange-100 text-orange-700"></p-chip>
+            <p-chip label="Azure AD B2C" styleClass="bg-orange-100 text-orange-700"></p-chip>
+            <p-chip label="MFA Support" styleClass="bg-orange-100 text-orange-700"></p-chip>
+            <p-chip label="Regular Audits" styleClass="bg-orange-100 text-orange-700"></p-chip>
+          </div>
+          <p class="text-gray-700 leading-relaxed pl-4">
+            Our infrastructure leverages enterprise-grade Azure SQL Database with comprehensive security features.
+            Multi-factor authentication adds an additional layer of protection, while regular security audits
+            ensure ongoing compliance with industry standards.
+          </p>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-share-alt mr-2"></i>Data Sharing and Third Parties</h2>
+          <p class="text-gray-700 leading-relaxed mb-4 pl-4">
+            We do not sell your personal information. Data may be shared with trusted service providers who
+            assist in delivering our services.
+          </p>
+          <p-table [value]="thirdParties" styleClass="text-sm pl-4">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="bg-orange-50 font-semibold">Service Provider</th>
+                <th class="bg-orange-50 font-semibold">Purpose</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-party>
+              <tr>
+                <td>{{ party.name }}</td>
+                <td>{{ party.purpose }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-user mr-2"></i>Your Rights</h2>
+          <div class="space-y-4 pl-4">
+            <div class="border-l-4 border-orange-500">
+              <h3 class="font-semibold text-gray-800" style="margin: 0;">Access</h3>
+              <p class="text-gray-700 pl-2" style="margin: 0;">Request copies of your personal data at any time through your account settings or by contacting our privacy team.</p>
+            </div>
+            <div class="border-l-4 border-orange-500">
+              <h3 class="font-semibold text-gray-800" style="margin: 0;">Correction</h3>
+              <p class="text-gray-700 pl-2" style="margin: 0;">Request correction of inaccurate information to ensure your records remain current and accurate.</p>
+            </div>
+            <div class="border-l-4 border-orange-500">
+              <h3 class="font-semibold text-gray-800" style="margin: 0;">Deletion</h3>
+              <p class="text-gray-700 pl-2" style="margin: 0;">Request deletion of your data, subject to legal and regulatory requirements for record retention.</p>
+            </div>
+            <div class="border-l-4 border-orange-500">
+              <h3 class="font-semibold text-gray-800" style="margin: 0;">Portability</h3>
+              <p class="text-gray-700 pl-2" style="margin: 0;">Export your data in machine-readable format for transfer to other services or for your own records.</p>
+            </div>
+          </div>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-calendar mr-2"></i>Data Retention</h2>
+          <p class="text-gray-700 px-6 leading-relaxed">
+            Data is retained as long as your account remains active or as needed to provide services. After
+            account closure, data is retained for seven years to comply with veterinary record-keeping requirements,
+            then securely deleted using industry-standard data destruction methods.
+          </p>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-globe mr-2"></i>Cookies and Tracking</h2>
+          <p class="text-gray-700 px-6 leading-relaxed mb-4">
+            We use cookies to enhance your experience and maintain secure sessions. Essential cookies enable
+            authentication and session management. Analytics cookies help us understand usage patterns and
+            performance metrics to continuously improve our service.
+          </p>
+        </section>
+
+        <p-divider></p-divider>
+
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4"><i class="pi pi-comments mr-2"></i>Contact Us</h2>
+          <div class="px-6 rounded-lg">
+            <p class="text-gray-700 mb-4">For privacy-related inquiries, please reach out to our dedicated privacy team.</p>
+            <div class="space-y-3">
+              <p class="flex items-center text-gray-700">
+                <i class="pi pi-envelope mr-3 text-orange-600"></i>
+                <span><strong>Email:</strong>&nbsp;<a href="mailto:legal@vetpathway.net" class="text-orange-600 hover:underline font-semibold">privacy&#64;vetpathway.net</a></span>
+              </p>
+              <p class="flex items-center text-gray-700">
+                <i class="pi pi-map-marker mr-3 text-orange-600"></i>
+                <span><strong>Address:</strong> VetPathWay.Net Privacy Office</span>
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <div class="flex justify-end items-end p-4 border-t">
+          <div class="flex gap-3">
+            <p-button label="Print" icon="pi pi-print" [outlined]="true" severity="secondary" (onClick)="print()"></p-button>
+            <p-button label="Accept Policy" icon="pi pi-check" styleClass="bg-orange-500 border-orange-500"></p-button>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+</div>
