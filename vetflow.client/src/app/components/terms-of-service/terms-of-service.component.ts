@@ -31,7 +31,7 @@ interface PricingPlan {
   styleUrl: './terms-of-service.component.scss'
 })
 export class TermsOfServiceComponent implements OnInit {
-  private titleService = inject(Title);
+  constructor(private titleService: Title) { }
 
   effectiveDate = new Date();
 

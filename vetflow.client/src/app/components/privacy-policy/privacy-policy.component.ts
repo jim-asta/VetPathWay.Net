@@ -35,7 +35,8 @@ interface ThirdParty {
 })
 
 export class PrivacyPolicyComponent implements OnInit {
-  private titleService = inject(Title);
+  constructor(private titleService: Title) { }
+
   lastUpdated = new Date();
 
   thirdParties: ThirdParty[] = [
