@@ -1,5 +1,5 @@
-import { Component, Directive, ElementRef, OnInit, OnDestroy, ViewChild, inject, Self, Optional, AfterViewInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, NgControl, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { Component, OnInit, inject, AfterViewInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
@@ -13,7 +13,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DividerModule } from 'primeng/divider';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
-
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -35,16 +35,14 @@ import { ToastModule } from 'primeng/toast';
   providers: [MessageService]
 })
 export class LoginComponent implements OnInit, AfterViewInit {
-
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private messageService = inject(MessageService);
+  constructor(private fb: FormBuilder, private router: Router, private messageService: MessageService, private authService: AuthService) { }
 
   loginForm!: FormGroup;
   isLoading: boolean = false;
   
   ngOnInit(): void {
     this.initializeForm();
+    this.email?.setValue(localStorage.getItem('rememberMeEmail'));
   }
 
   private initializeForm(): void {
@@ -76,45 +74,42 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSubmit(): void {
+  onLoginLocal(): void {
      if (this.loginForm.valid) {
       this.isLoading = true;
 
-      // Simulate API call
-      setTimeout(() => {
-        const { email, password, rememberMe } = this.loginForm.value;
+       const { email, password, rememberMe } = this.loginForm.value;
 
-        // Mock authentication logic
-        if (this.authenticateUser(email, password)) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Login successful! Redirecting...',
-            life: 3000
-          });
+       this.authService.loginLocal(email, password).subscribe({
+         next: () => {
+           this.messageService.add({
+             severity: 'success',
+             summary: 'Success',
+             detail: 'Login successful! Redirecting...',
+             life: 3000
+           });
 
-          // Handle remember me
-          if (rememberMe) {
-            localStorage.setItem('rememberMe', 'true');
-            localStorage.setItem('rememberMeEmail', email?.value);
-          }
+           // Handle remember me if this is a vaild login
+           if (rememberMe) {
+             localStorage.setItem('rememberMe', 'true');
+             localStorage.setItem('rememberMeEmail', email);
+           }
 
-          // Redirect to dashboard after short delay
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-          }, 1500);
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Invalid email or password. Please try again.',
-            life: 3000
-          });
-        }
-
-        this.isLoading = false;
-      }, 1500);
-    } else {
+           this.router.navigate(['/dashboard']);
+           this.isLoading = false;
+         },
+         error: err => {
+           this.messageService.add({
+             severity: 'error',
+             summary: 'Error',
+             detail: 'Invalid email or password. Please try again.',
+             life: 3000
+           });
+           console.log(err.error?.message ?? err.error?.error ?? err.message ?? 'Unknown error occurred');
+           this.isLoading = false;
+         }
+       });
+    } else { 
       this.markFormGroupTouched(this.loginForm);
       this.messageService.add({
         severity: 'warn',
@@ -123,6 +118,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
         life: 4000
       });
     }
+  }
+
+  loginGoogle() {
+    this.authService.loginSso('google');
+  }
+
+  loginMicrosoft() {
+    this.authService.loginSso('microsoft');
   }
 
   onForgotPassword(event: Event): void {
@@ -151,11 +154,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     // Implement social login logic here
     console.log(`Attempting ${provider} login`);
-  }
-
-  private authenticateUser(email: string, password: string): boolean {
-    // Mock authentication - replace with actual API call
-    return email === 'demo@vetpathway.net' && password === 'password123';
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {

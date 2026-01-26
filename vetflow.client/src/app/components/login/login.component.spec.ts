@@ -38,10 +38,10 @@ describe('LoginComponent', () => {
   });
 
   it('should emit login event when form is valid and submitted', () => {
-    spyOn(component, 'onSubmit');
+    spyOn(component, 'onLoginLocal');
     component.loginForm.setValue({ username: 'test', password: 'pass' });
     const form = fixture.nativeElement.querySelector('form');
     form.dispatchEvent(new Event('submit'));
-    expect(component.onSubmit).toHaveBeenCalled();
+    expect(component.onLoginLocal).toHaveBeenCalled();
   });
 });
