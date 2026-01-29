@@ -1,10 +1,12 @@
-import { Component, OnInit, inject, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
+import { ForgotPasswordComponent } from '@components/forgot-password/forgot-password.component';
 
 // PrimeNG Imports
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -14,6 +16,7 @@ import { DividerModule } from 'primeng/divider';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { AuthService } from '@services/auth.service';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-login',
@@ -29,17 +32,19 @@ import { AuthService } from '@services/auth.service';
     DividerModule,
     MessageModule,
     ToastModule,
+    DialogModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
-  providers: [MessageService]
+  providers: [MessageService, DialogService]
 })
-export class LoginComponent implements OnInit, AfterViewInit {
-  constructor(private fb: FormBuilder, private router: Router, private messageService: MessageService, private authService: AuthService) { }
+export class LoginComponent implements OnInit, OnDestroy {
+  constructor(private fb: FormBuilder, private router: Router, private messageService: MessageService, private authService: AuthService, private dialogService: DialogService) { }
 
   loginForm!: FormGroup;
   isLoading: boolean = false;
-  
+  dialogRef: DynamicDialogRef | undefined;
+
   ngOnInit(): void {
     this.initializeForm();
     this.email?.setValue(localStorage.getItem('rememberMeEmail'));
@@ -71,6 +76,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
           }
         })
         .catch(err => console.debug('No credentials returned:', err));
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.dialogRef) {
+      this.dialogRef.close();
     }
   }
 
@@ -131,16 +142,18 @@ export class LoginComponent implements OnInit, AfterViewInit {
   onForgotPassword(event: Event): void {
     event.preventDefault();   // Don't navigate to "#"
 
-      // Simulate API call
-    setTimeout(() => {
-
-      // Mock authentication logic
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Change password! Redirecting to back-end...',
-        life: 3000
-      });
+    this.dialogRef = this.dialogService.open(ForgotPasswordComponent, {
+      modal: true,
+      dismissableMask: true,
+      showHeader: false,  // Hide default header
+      contentStyle: {
+        overflow: 'hidden',  // Prevent scrollbars
+        borderRadius: '0.75rem',  // Match login card
+      },
+      styleClass: 'w-[26.25rem] !border-0 !m-4',  // Match login card
+      data: {
+        email: this.email?.valid ? this.email.value : ''
+      }
     });
   }
 

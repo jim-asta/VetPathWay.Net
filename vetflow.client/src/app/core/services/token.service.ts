@@ -20,15 +20,15 @@ export class TokenService {
   }
 
   setTokens(tokens: AuthToken): void {
-    if (tokens.access_token) {
-      sessionStorage.setItem(this.ACCESS_TOKEN_KEY, tokens.access_token);
-      this.tokenSubject.next(tokens.access_token);
+    if (tokens.accessToken) {
+      sessionStorage.setItem(this.ACCESS_TOKEN_KEY, tokens.accessToken);
+      this.tokenSubject.next(tokens.accessToken);
     }
-    if (tokens.id_token) {
-      sessionStorage.setItem(this.ID_TOKEN_KEY, tokens.id_token);
+    if (tokens.idToken) {
+      sessionStorage.setItem(this.ID_TOKEN_KEY, tokens.idToken);
     }
-    if (tokens.refresh_token) {
-      sessionStorage.setItem(this.REFRESH_TOKEN_KEY, tokens.refresh_token);
+    if (tokens.refreshToken) {
+      sessionStorage.setItem(this.REFRESH_TOKEN_KEY, tokens.refreshToken);
     }
   }
 
