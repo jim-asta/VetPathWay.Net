@@ -1,20 +1,21 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MailerSend.AspNetCore;
+using MailerSend.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph.Models.ODataErrors;
-using SendGrid;
-using SendGrid.Helpers.Mail;
+using System.Net;
 using VetFlow.Server.DTOs;
 using VetFlow.Server.Services;
+using ReverseMarkdown;
 
 namespace VetFlow.Server.Controllers.auth
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ForgotPasswordController(GraphService graphService, ILogger<ForgotPasswordController> logger, IConfiguration config) : ControllerBase
+    public class ForgotPasswordController(GraphService graphService, ILogger<ForgotPasswordController> logger, MailerSendService mailerSend) : ControllerBase
     {
         private readonly GraphService _graphService = graphService;
         private readonly ILogger<ForgotPasswordController> _logger = logger;
-        private readonly IConfiguration _config = config;
+        private readonly MailerSendService _mailerSend = mailerSend;
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ForgotPasswordRequest request)
@@ -22,6 +23,21 @@ namespace VetFlow.Server.Controllers.auth
             _logger.LogInformation("Password reset request received for user with email: {Email}", request.Email);
             try
             {
+                var recipients = new List<Recipient>
+{
+    new Recipient
+    {
+        Email = "your-test-email@gmail.com",  // Use your own email for testing
+        Name = "Test User"
+    }
+};
+
+                await _mailerSend.SendMailAsync(
+                    to: recipients,
+                    subject: "Test Email",
+                    html: "<p>Test message</p>",
+                    text: "Test message");
+
                 _logger.LogDebug("Attempting to reset password for user with email: {Email}", request.Email);
                 if (await _graphService.GetUserPrincipalNameByEmailAsync(request.Email) == null)
                 {
@@ -35,39 +51,93 @@ namespace VetFlow.Server.Controllers.auth
                     });
                 }
 
-
-                var resetUrl = $"https://passwordreset.microsoftonline.com/?username={Uri.EscapeDataString(request.Email)}";
-
-                var htmlContent = @"
-                                        <p>Hello,</p>
-                                        <p>To reset your password, please follow these steps:</p>
-                                        <ol>
-                                            <li>Click this link: <a href='https://passwordreset.microsoftonline.com/?username=" + Uri.EscapeDataString(request.Email) + @"'>Reset Password</a></li>
-                                            <li>Enter your email address: <strong>" + request.Email + @"</strong></li>
-                                            <li>Verify your identity using one of your registered methods</li>
-                                            <li>Create a new password</li>
-                                        </ol>";
-
-                var msg = MailHelper.CreateSingleEmail(new EmailAddress("notifications@vetpathway.net", "VetPathway"), 
-                    to: new EmailAddress(request.Email), subject: "Password Reset Instructions", ConvertHtmlToPlainText(htmlContent), htmlContent);
-
-                Response? sendEmailResponse;
-                if(!(sendEmailResponse = await new SendGridClient(_config["SendGrid:ApiKey"]).SendEmailAsync(msg)).IsSuccessStatusCode)
-                {
-                    _logger.LogError("SendGrid failed to send email. Status: {StatusCode}, Body: {Body}",
-                        sendEmailResponse.StatusCode, await sendEmailResponse.Body.ReadAsStringAsync());
-                    return StatusCode(500, new ForgotPasswordResponse
-                    {
-                        Success = false,
-                        Message = "Failed to send password reset email"
-                    });
-                }
+                string? htmlContent;
+                await _mailerSend.SendMailAsync(to: new List<Recipient>
+                                                    {
+                                                        new Recipient
+                                                        {
+                                                            Email = request.Email,
+                                                            Name = request.Email.Split('@')[0] // Use part before @ as name
+                                                        }
+                                                    },
+                                                    subject: "Password Reset Instructions",
+                                                    html: htmlContent = @"
+                                                        <p>Hello,</p>
+                                                        <p>To reset your password, please follow these steps:</p>
+                                                        <ol>
+                                                            <li>Click this link: <a href='https://passwordreset.microsoftonline.com/?username=" + Uri.EscapeDataString(request.Email) + @"'>Reset Password</a></li>
+                                                            <li>Enter your email address: <strong>{request.Email}</strong></li>
+                                                            <li>Verify your identity using one of your registered methods</li>
+                                                            <li>Create a new password</li>
+                                                        </ol>
+                                                        <p>If you didn't request this, please ignore this email.</p>",
+                                                    text: new Converter().Convert(htmlContent));     // Exception-based error handling, so no need to check null here
 
                 _logger.LogInformation("Password reset successful for user with: {Email}", request.Email);
                 return Ok(new ForgotPasswordResponse
                 {
                     Success = true,
                     Message = "Password reset successful."
+                });
+            }
+            catch (HttpRequestException httpEx) when (httpEx.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                // 401 - Invalid API token
+                _logger.LogError(httpEx, "MailerSend authentication failed. Check your API token configuration.");
+                return StatusCode(500, new ForgotPasswordResponse
+                {
+                    Success = false,
+                    Message = "Email service is temporarily unavailable. Please try again later."
+                });
+            }
+            catch (HttpRequestException httpEx) when (httpEx.StatusCode == HttpStatusCode.Forbidden)
+            {
+                // 403 - Domain not verified or insufficient permissions
+                _logger.LogError(httpEx, "MailerSend domain not verified or insufficient permissions.");
+                return StatusCode(500, new ForgotPasswordResponse
+                {
+                    Success = false,
+                    Message = "Email service configuration error. Please contact support."
+                });
+            }
+            catch (HttpRequestException httpEx) when (httpEx.StatusCode == (HttpStatusCode)422)
+            {
+                // 422 - Validation error (invalid email format, etc.)
+                _logger.LogError(httpEx, "MailerSend validation error for email: {Email}", request.Email);
+                return StatusCode(500, new ForgotPasswordResponse
+                {
+                    Success = false,
+                    Message = "Failed to send password reset email. Please try again later."
+                });
+            }
+            catch (HttpRequestException httpEx) when (httpEx.StatusCode == (HttpStatusCode)429)
+            {
+                // 429 - Rate limit exceeded
+                _logger.LogError(httpEx, "MailerSend rate limit exceeded.");
+                return StatusCode(429, new ForgotPasswordResponse
+                {
+                    Success = false,
+                    Message = "Too many requests. Please try again in a few minutes."
+                });
+            }
+            catch (HttpRequestException httpEx)
+            {
+                // Other HTTP errors
+                _logger.LogError(httpEx, "MailerSend HTTP error. Status: {StatusCode}", httpEx.StatusCode);
+                return StatusCode(500, new ForgotPasswordResponse
+                {
+                    Success = false,
+                    Message = "Failed to send password reset email. Please try again later."
+                });
+            }
+            catch (TaskCanceledException ex)
+            {
+                // Timeout
+                _logger.LogError(ex, "MailerSend request timed out for user: {Email}", request.Email);
+                return StatusCode(504, new ForgotPasswordResponse
+                {
+                    Success = false,
+                    Message = "Request timed out. Please try again later."
                 });
             }
             catch (ODataError ex)
@@ -91,24 +161,6 @@ namespace VetFlow.Server.Controllers.auth
                     Message = "An unexpected error occurred while resetting password"
                 });
             }
-        }
-
-        private string ConvertHtmlToPlainText(string htmlContent)
-        {
-            if (string.IsNullOrWhiteSpace(htmlContent))
-                return string.Empty;
-
-            // Remove HTML tags
-            var text = System.Text.RegularExpressions.Regex.Replace(htmlContent, "<.*?>", string.Empty);
-
-            // Decode HTML entities (like &nbsp;, &lt;, etc.)
-            text = System.Net.WebUtility.HtmlDecode(text);
-
-            // Replace multiple whitespace/newlines with single space
-            text = System.Text.RegularExpressions.Regex.Replace(text, @"\s+", " ");
-
-            // Trim the result
-            return text.Trim();
         }
     }
 }
