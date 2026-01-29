@@ -1,9 +1,7 @@
-﻿using Azure.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
-using Microsoft.Graph.Models;
+using Microsoft.Graph.Models.ODataErrors;
 using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 using VetFlow.Server.DTOs;
 using VetFlow.Server.Services;
 
@@ -25,36 +23,40 @@ namespace VetFlow.Server.Controllers.auth
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateAccountRequest req)
+        public async Task<IActionResult> Post([FromBody] CreateAccountRequest request)
         {
+            _logger.LogInformation("Account creation request received for email: {Email}", request.Email);
+
             try
             {
                 // Check if user already exists
-                if (!await _graphService.UserExistsAsync(req.Email))
+                _logger.LogDebug("Checking if user exists: {Email}", request.Email);
+                if (!await _graphService.UserExistsAsync(request.Email))
                 {
                     // Create the new user
+                	_logger.LogDebug("Creating new user account: {Email}", request.Email);
                     Microsoft.Graph.Models.User? createdUser;
-                    if ((createdUser = await _graphService.CreateUserAsync(req.Email, req.Password)) == null)
+                    if ((createdUser = await _graphService.CreateUserAsync(request.Email, request.Password)) == null)
                     {
-                        _logger.LogError("Failed to create user for email: " + req.Email);
+                        _logger.LogError("Failed to create user for email: " + request.Email);
                         return StatusCode(500, new CreateAccountResponse
                         {
                             Success = false,
-                            Message = "Failed to create user for email: " + req.Email
+                            Message = "Failed to create user for email: " + request.Email
                         });
                     }
 
-                    _logger.LogInformation("Successfully created user account: {Email}", req.Email);
+                    _logger.LogInformation("Successfully created user account: {Email}", request.Email);
 
                     return Ok(new CreateAccountResponse
                     {
                         Success = true,
                         Message = "Account created successfully",
-                        UserId = createdUser?.Id
+                        UserId = createdUser.Id
                     });
                 }
                 else                {
-                    _logger.LogWarning("Attempt to create account with existing email: {Email}", req.Email);
+                    _logger.LogWarning("Attempt to create account with existing email: {Email}", request.Email);
                     return Conflict(new CreateAccountResponse  // Returns 409
                     {
                         Success = false,
@@ -63,9 +65,11 @@ namespace VetFlow.Server.Controllers.auth
                 }
 
             }
-            catch (ServiceException ex)
+            catch (ODataError ex)
             {
-                _logger.LogError(ex, "Microsoft Graph API error while creating user: {Email}", req.Email);
+                _logger.LogError(ex, "Microsoft Graph API error while creating user account: {Email}. Error code: {ErrorCode}", 
+                    request.Email, ex.Error?.Message);
+
 
                 return BadRequest(new CreateAccountResponse
                 {
@@ -75,7 +79,7 @@ namespace VetFlow.Server.Controllers.auth
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error while creating user account: {Email}", req.Email);
+                _logger.LogError(ex, "Unexpected error while creating user account: {Email}", request.Email);
 
                 return StatusCode(500, new CreateAccountResponse
                 {

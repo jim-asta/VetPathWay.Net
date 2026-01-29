@@ -11,6 +11,7 @@ namespace VetFlow.Server.DTOs
 
         [Required(ErrorMessage = "Password is required")]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters")]
+        [MaxLength(256, ErrorMessage = "Password must not be longer than 256 characters")]
         [PasswordStrength(ErrorMessage = "Password must contain at least 3 of the following: uppercase letters, lowercase letters, numbers, and symbols")]
         public string Password { get; set; } = "";
 

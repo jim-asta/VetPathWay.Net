@@ -62,11 +62,14 @@ export class CreateAccountComponent implements OnInit, OnDestroy {
     this.createAccountForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(256), passwordStrengthValidator(this.requirements)]],
-      passwordConfirm: ['', [Validators.required, passwordMatchValidator(() => this.password)]]
+      passwordConfirm: ['', [passwordMatchValidator(() => this.password)]]
     });
 
-    // Re-validate passwordConfirm whenever password changes
+    // Re-validate passwordConfirm when password changes so errors show on passwordConfirm
     this.password?.valueChanges.subscribe(() => {
+      if (this.password?.value) {
+        this.passwordConfirm?.markAsTouched();
+      }
       this.passwordConfirm?.updateValueAndValidity();
     });
   }
