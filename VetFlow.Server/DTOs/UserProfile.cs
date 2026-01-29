@@ -1,6 +1,6 @@
 ﻿namespace VetFlow.Server.DTOs
 {
-    public class UserProfile
+    public class UserProfileResponse
     {
         public string Name { get; set; } = "";
         public string Email { get; set; } = "";
