@@ -1,5 +1,4 @@
 ﻿using MailerSend.AspNetCore;
-using MailerSend.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph.Models.ODataErrors;
 using System.Net;
@@ -23,23 +22,9 @@ namespace VetFlow.Server.Controllers.auth
             _logger.LogInformation("Password reset request received for user with email: {Email}", request.Email);
             try
             {
-                var recipients = new List<Recipient>
-{
-    new Recipient
-    {
-        Email = "your-test-email@gmail.com",  // Use your own email for testing
-        Name = "Test User"
-    }
-};
-
-                await _mailerSend.SendMailAsync(
-                    to: recipients,
-                    subject: "Test Email",
-                    html: "<p>Test message</p>",
-                    text: "Test message");
-
                 _logger.LogDebug("Attempting to reset password for user with email: {Email}", request.Email);
-                if (await _graphService.GetUserPrincipalNameByEmailAsync(request.Email) == null)
+                string? upn;
+                if ((upn = await _graphService.GetUserPrincipalNameByEmailAsync(request.Email)) == null)
                 {
                     _logger.LogError("Password reset failed - User for email: {Email} does not exist.", request.Email);
                     // SECURITY: Don't reveal if user exists or not - always return success
@@ -65,7 +50,7 @@ namespace VetFlow.Server.Controllers.auth
                                                         <p>Hello,</p>
                                                         <p>To reset your password, please follow these steps:</p>
                                                         <ol>
-                                                            <li>Click this link: <a href='https://passwordreset.microsoftonline.com/?username=" + Uri.EscapeDataString(request.Email) + @"'>Reset Password</a></li>
+                                                            <li>Click this link: <a href='https://passwordreset.microsoftonline.com/?username=" + Uri.EscapeDataString(upn) + @"'>Reset Password</a></li>
                                                             <li>Enter your email address: <strong>{request.Email}</strong></li>
                                                             <li>Verify your identity using one of your registered methods</li>
                                                             <li>Create a new password</li>
