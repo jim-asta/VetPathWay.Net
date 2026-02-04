@@ -1,8 +1,8 @@
 <p-toast position="top-right" [life]="5000" styleClass="p-toast-vetflow"></p-toast>
 
 <!-- Main Card Container -->
-<div class="w-full max-w-md relative z-10">
-  <p-card [style]="{ overflow: 'hidden' }" styleClass="sm:w-[26.25rem]" class="shadow-2xl border-0 overflow-hidden backdrop-blur-sm bg-white/95">
+<div class="w-full sm:w-[26.25rem] relative z-10">
+  <p-card [style]="{ overflow: 'hidden' }" class="shadow-2xl border-0 overflow-hidden backdrop-blur-sm bg-white/95">
 
     <!-- Header Section with Logo -->
     <ng-template pTemplate="header">
@@ -19,7 +19,7 @@
 
     <!-- Login Form Content -->
     <div class="p-8">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="loginForm flex flex-col space-y-6">
+      <form [formGroup]="loginForm" (ngSubmit)="onLoginLocal()" class="loginForm flex flex-col space-y-6">
 
         <!-- Email Input -->
         <div class="flex flex-col gap-2">
@@ -32,7 +32,6 @@
                    id="email"
                    name="email"
                    type="email"
-                   autocomplete="on"
                    formControlName="email"
                    autocomplete="username"
                    placeholder="you@example.com"
@@ -54,7 +53,7 @@
             }
           </div>
           }
-    </div>
+        </div>
 
         <!-- Password Input -->
         <div class="flex flex-col gap-2">
@@ -126,7 +125,7 @@
                   icon="pi pi-google"
                   [outlined]="true"
                   severity="secondary"
-                  (onClick)="socialLogin('google')"
+                  (click)="onLoginSso(Idp.Google)"
                   styleClass="w-full justify-center py-2.5 border-2 border-gray-200 hover:border-orange-300 hover:bg-orange-50 text-gray-700 font-medium rounded-lg transition-all duration-200">
         </p-button>
 
@@ -134,7 +133,7 @@
                   icon="pi pi-microsoft"
                   [outlined]="true"
                   severity="secondary"
-                  (onClick)="socialLogin('microsoft')"
+                  (click)="onLoginSso(Idp.Microsoft)"
                   styleClass="w-full justify-center py-2.5 border-2 border-gray-200 hover:border-orange-300 hover:bg-orange-50 text-gray-700 font-medium rounded-lg transition-all duration-200">
         </p-button>
       </div>
@@ -161,3 +160,4 @@
       <a href="terms-of-service" class="text-orange-600 hover:underline">Terms of Service</a>
     </p>
   </div>
+</div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -7,10 +7,17 @@ import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { MenubarModule } from 'primeng/menubar';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
-import { MenuItem } from 'primeng/api';
+import { AvatarModule } from 'primeng/avatar';
+import { BadgeModule } from 'primeng/badge';
+import { ChipModule } from 'primeng/chip';
+import { SkeletonModule } from 'primeng/skeleton';
+import { TagModule } from 'primeng/tag';
+import { DividerModule } from 'primeng/divider';
+import { MessageService, MenuItem } from 'primeng/api';
 
-import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../core/services/auth.service';
+import { UserProfileService } from '@core/services/user-profile.service';
+import { UserProfile } from '@DTOs/user-profile.dto';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,23 +27,29 @@ import { ApiService } from '../../services/api.service';
     CardModule,
     ButtonModule,
     MenubarModule,
-    ToastModule
+    ToastModule,
+    AvatarModule,
+    BadgeModule,
+    ChipModule,
+    SkeletonModule,
+    TagModule,
+    DividerModule
   ],
   providers: [MessageService],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  menuItems: MenuItem[] = [];
+  constructor(private router: Router, private authService: AuthService, private userProfileService: UserProfileService, private messageService: MessageService) { }
 
-  constructor(
-    private router: Router,
-    private apiService: ApiService,
-    private messageService: MessageService
-  ) { }
+  menuItems: MenuItem[] = [];
+  userProfile: UserProfile | null = null;
+  isLoadingProfile = true;
+  profileError = false;
 
   ngOnInit(): void {
     this.initializeMenu();
+    this.loadUserProfile();
   }
 
   private initializeMenu(): void {
@@ -69,6 +82,43 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
+  private loadUserProfile(): void {
+    this.isLoadingProfile = true;
+    this.profileError = false;
+
+    this.userProfileService.getUserProfile().subscribe({
+      next: (profile) => {
+        this.userProfile = profile;
+        this.isLoadingProfile = false;
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Welcome!',
+          detail: 'Successfully authenticated as ' + profile.name,
+          life: 3000
+        });
+      },
+      error: (err) => {
+        this.isLoadingProfile = false;
+        this.profileError = true;
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Authentication Failed',
+          detail: 'Could not load user profile. Please log in again.',
+          life: 5000
+        });
+
+        console.error('Profile load error:', err);
+
+        // Redirect to login after delay
+        setTimeout(() => {
+          this.authService.logout();
+        }, 3000);
+      }
+    });
+  }
+
   logout(): void {
     this.messageService.add({
       severity: 'info',
@@ -77,26 +127,27 @@ export class DashboardComponent implements OnInit {
     });
 
     setTimeout(() => {
-      this.router.navigate(['/login']);
+      this.authService.logout();
     }, 1000);
   }
 
-  testApiConnection(): void {
-    this.apiService.testConnection().subscribe({
-      next: (response) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'API Connected',
-          detail: 'Successfully connected to the API'
-        });
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'API Connection',
-          detail: 'Could not connect to API - this is expected in skeleton mode'
-        });
-      }
+  getInitials(name: string): string {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   }
 }

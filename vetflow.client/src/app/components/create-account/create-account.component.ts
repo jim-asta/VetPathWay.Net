@@ -17,6 +17,7 @@ import { ToastModule } from 'primeng/toast';
 import { PasswordStrengthComponent } from './password-strength/password-strength.component';
 import { PasswordStrengthRequirements, passwordStrengthValidator } from './validators/password-strength-validator';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-create-account',
@@ -39,10 +40,9 @@ import { Subscription } from 'rxjs';
   providers: [MessageService]
 })
 export class CreateAccountComponent implements OnInit, OnDestroy {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private messageService: MessageService) { }
+
   private subscription?: Subscription;
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private messageService = inject(MessageService);
   private requirements: PasswordStrengthRequirements = {
     uppercase: true,
     lowercase: true,
@@ -62,11 +62,14 @@ export class CreateAccountComponent implements OnInit, OnDestroy {
     this.createAccountForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(256), passwordStrengthValidator(this.requirements)]],
-      passwordConfirm: ['', [Validators.required, passwordMatchValidator(() => this.password)]]
+      passwordConfirm: ['', [passwordMatchValidator(() => this.password)]]
     });
 
-    // Re-validate passwordConfirm whenever password changes
+    // Re-validate passwordConfirm when password changes so errors show on passwordConfirm
     this.password?.valueChanges.subscribe(() => {
+      if (this.password?.value) {
+        this.passwordConfirm?.markAsTouched();
+      }
       this.passwordConfirm?.updateValueAndValidity();
     });
   }
@@ -75,29 +78,43 @@ export class CreateAccountComponent implements OnInit, OnDestroy {
     this.subscription?.unsubscribe();
   }
 
-  onSubmit(): void {
+  onSignup(): void {
     if (this.createAccountForm.valid) {
       this.isLoading = true;
 
-      // Simulate API call
-      setTimeout(() => {
-        const { email, password } = this.createAccountForm.value;
+      const { email, password, passwordConfirm } = this.createAccountForm.value;
 
-        // Mock authentication logic
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Account creation successful! Redirecting...',
-          life: 3000
-        });
+      this.authService.signup(email, password, passwordConfirm).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Account creation successful! Please log in with the new user.',
+            life: 3000
+          });
 
-        // Redirect to login after short delay
-        setTimeout(() => {
           this.router.navigate(['/login']);
-        }, 1500);
-
-        this.isLoading = false;
-      }, 1500);
+          this.isLoading = false;
+        },
+        error: err => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Invalid email or password. Please try again.',
+            life: 3000
+          });
+          console.log(err.error?.message ?? err.error?.error ?? err.message ?? 'Unknown error occurred');
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.markFormGroupTouched(this.createAccountForm);
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Please fill in all required fields correctly.',
+        life: 4000
+      });
     }
   }
 

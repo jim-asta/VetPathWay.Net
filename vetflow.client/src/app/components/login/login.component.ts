@@ -1,10 +1,13 @@
-import { Component, Directive, ElementRef, OnInit, OnDestroy, ViewChild, inject, Self, Optional, AfterViewInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, NgControl, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
+import { ForgotPasswordComponent } from '@components/forgot-password/forgot-password.component';
+import { Idp } from '@enums/idp';
 
 // PrimeNG Imports
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -13,7 +16,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DividerModule } from 'primeng/divider';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
-
+import { AuthService } from '@services/auth.service';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-login',
@@ -29,23 +33,26 @@ import { ToastModule } from 'primeng/toast';
     DividerModule,
     MessageModule,
     ToastModule,
+    DialogModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
-  providers: [MessageService]
+  providers: [MessageService, DialogService]
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements OnInit, OnDestroy {
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private messageService: MessageService, private authService: AuthService, private dialogService: DialogService) { }
 
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private messageService = inject(MessageService);
+  readonly Idp = Idp;   // Expose Idp enum to template
 
   loginForm!: FormGroup;
   isLoading: boolean = false;
-  
+  dialogRef: DynamicDialogRef | undefined;
+
   ngOnInit(): void {
     this.initializeForm();
-  }
+    this.email?.setValue(localStorage.getItem('rememberMeEmail'));
+    this.handleSsoCallback();
+}
 
   private initializeForm(): void {
     this.loginForm = this.fb.nonNullable.group({    // Don't allow any values to be null
@@ -56,6 +63,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.handleSsoCallback();
+
     if (('credentials' in navigator)) {
 
       const opts = { password: true, mediation: 'optional' } as any;
@@ -76,45 +85,48 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSubmit(): void {
+  ngOnDestroy(): void {
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+  }
+
+  onLoginLocal(): void {
      if (this.loginForm.valid) {
       this.isLoading = true;
 
-      // Simulate API call
-      setTimeout(() => {
-        const { email, password, rememberMe } = this.loginForm.value;
+       const { email, password, rememberMe } = this.loginForm.value;
 
-        // Mock authentication logic
-        if (this.authenticateUser(email, password)) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Login successful! Redirecting...',
-            life: 3000
-          });
+       this.authService.loginLocal(email, password).subscribe({
+         next: () => {
+           this.messageService.add({
+             severity: 'success',
+             summary: 'Success',
+             detail: 'Login successful! Redirecting...',
+             life: 3000
+           });
 
-          // Handle remember me
-          if (rememberMe) {
-            localStorage.setItem('rememberMe', 'true');
-            localStorage.setItem('rememberMeEmail', email?.value);
-          }
+           // Handle remember me if this is a vaild login
+           if (rememberMe) {
+             localStorage.setItem('rememberMe', 'true');
+             localStorage.setItem('rememberMeEmail', email);
+           }
 
-          // Redirect to dashboard after short delay
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-          }, 1500);
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Invalid email or password. Please try again.',
-            life: 3000
-          });
-        }
-
-        this.isLoading = false;
-      }, 1500);
-    } else {
+           this.router.navigate(['/dashboard']);
+           this.isLoading = false;
+         },
+         error: err => {
+           this.messageService.add({
+             severity: 'error',
+             summary: 'Error',
+             detail: 'Invalid email or password. Please try again.',
+             life: 3000
+           });
+           console.log(err.error?.message ?? err.error?.error ?? err.message ?? 'Unknown error occurred');
+           this.isLoading = false;
+         }
+       });
+    } else { 
       this.markFormGroupTouched(this.loginForm);
       this.messageService.add({
         severity: 'warn',
@@ -125,37 +137,26 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onLoginSso(idp: Idp) {
+    this.authService.loginSso(idp);
+  }
+
   onForgotPassword(event: Event): void {
     event.preventDefault();   // Don't navigate to "#"
 
-      // Simulate API call
-    setTimeout(() => {
-
-      // Mock authentication logic
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Change password! Redirecting to back-end...',
-        life: 3000
-      });
+    this.dialogRef = this.dialogService.open(ForgotPasswordComponent, {
+      modal: true,
+      dismissableMask: true,
+      showHeader: false,  // Hide default header
+      contentStyle: {
+        overflow: 'hidden',  // Prevent scrollbars
+        borderRadius: '0.75rem',  // Match login card
+      },
+      styleClass: 'w-[26.25rem] !border-0 !m-4',  // Match login card
+      data: {
+        email: this.email?.valid ? this.email.value : ''
+      }
     });
-  }
-
-  socialLogin(provider: string): void {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Social Login',
-      detail: `Redirecting to ${provider} login...`,
-      life: 3000
-    });
-
-    // Implement social login logic here
-    console.log(`Attempting ${provider} login`);
-  }
-
-  private authenticateUser(email: string, password: string): boolean {
-    // Mock authentication - replace with actual API call
-    return email === 'demo@vetpathway.net' && password === 'password123';
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {
@@ -165,6 +166,33 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);
+      }
+    });
+  }
+
+  private handleSsoCallback(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params['token']) {
+        this.authService.handleSsoCallback(params['token']);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'SSO login successful! Redirecting...',
+          life: 3000
+        });
+        // Clean URL then navigate — avoids token sitting in browser history
+        this.router.navigate(['/dashboard'], { replaceUrl: true });
+      }
+
+      if (params['error'] === 'sso_failed') {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'SSO Login Failed',
+          detail: 'Something went wrong during SSO login. Please try again.',
+          life: 5000
+        });
+        // Clean the error param out of the URL
+        this.router.navigate(['/login'], { replaceUrl: true });
       }
     });
   }

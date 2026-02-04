@@ -19,7 +19,7 @@
 
     <!-- Login Form Content -->
     <div class="p-8">
-      <form [formGroup]="createAccountForm" (ngSubmit)="onSubmit()" class="createAccountForm flex flex-col space-y-6">
+      <form [formGroup]="createAccountForm" (ngSubmit)="onSignup()" class="createAccountForm flex flex-col space-y-6">
 
         <!-- Email Input -->
         <div class="flex flex-col gap-2">
@@ -85,6 +85,11 @@
                        text="Password must be at least 8 characters"
                        styleClass="text-xs"></p-message>
             }
+            @if(password?.hasError('maxlength')) {
+            <p-message severity="error"
+                       text="Password must not be more than 256 characters"
+                       styleClass="text-xs"></p-message>
+            }
             @if(password?.hasError('minCategories')) {
             <p-message severity="error"
                        text="Password not strong enough"
@@ -109,7 +114,7 @@
                         class="p-password-vetflow"
                         inputStyleClass="w-full pl-10 pr-4 py-3 rounded-lg border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200" />
           </span>
-          @if (this.passwordConfirm?.invalid && !(!this.passwordConfirm?.value && !this.password?.value)) {    <!-- Don't show if neither has a value (initial load)-->
+          @if (this.passwordConfirm?.invalid && (this.passwordConfirm?.touched || this.passwordConfirm?.dirty)) {
           <div>
             @if(passwordConfirm?.hasError('passwordMismatch')) {
             <p-message severity="error"
@@ -131,3 +136,4 @@
       </form>
     </div>
   </p-card>
+</div>
