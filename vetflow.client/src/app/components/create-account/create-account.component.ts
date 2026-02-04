@@ -89,7 +89,7 @@ export class CreateAccountComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Account creation successful! Redirecting...',
+            detail: 'Account creation successful! Please log in with the new user.',
             life: 3000
           });
 
