@@ -26,24 +26,15 @@ namespace VetFlow.Server.Controllers
             _logger.LogInformation("User profile request received");
             try
             {
-                string? upn;
-                if (string.IsNullOrEmpty(upn = User.FindFirst(ClaimTypes.Upn)?.Value))
-                    return Unauthorized(new ErrorResponse
-                    {
-                        Error = "missing_user_claim",
-                        ErrorDescription = "User principal name claim not found in token"
-                    });
-
-                _logger.LogDebug("Retrieving user profile information for UPN: {Upn}", upn);
                 var userEmail =
-                            (await _graphService.GetUserNameAndEmailByPrincipalNameAsync(upn)).Email
-                             ?? User.Claims.FirstOrDefault(c => c.Type == "preferred_username")?.Value
-                             ?? User.Claims.FirstOrDefault(c => c.Type == "email")?.Value
+                             User.FindFirst(ClaimTypes.Email)?.Value
+                             ?? User.FindFirst("preferred_username")?.Value
+                             ?? User.FindFirst("email")?.Value
+                             ?? User.FindFirst("emails")?.Value // Some providers use "emails"
                              ?? "user@example.com";
 
                 var userName =
-                            (await _graphService.GetUserNameAndEmailByPrincipalNameAsync(upn)).DisplayName
-                            ?? User.Claims.FirstOrDefault(c => c.Type == "name")?.Value
+                            User.FindFirst("name")?.Value
                             ?? User.Identity?.Name
                             ?? "User";
 
