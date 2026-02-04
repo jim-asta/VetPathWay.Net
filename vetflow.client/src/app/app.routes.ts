@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthLayoutComponent } from '@components/layouts/auth-layout/auth-layout.component';
 import { LoginComponent } from '@components/login/login.component';
-import { SignupComponent } from '@components/signup/signup.component';
 import { disableGuard } from '@core/guards/disable.guard';
 import { CreateAccountComponent } from '@components/create-account/create-account.component';
 import { authGuard } from '@core/guards/auth.guard';
