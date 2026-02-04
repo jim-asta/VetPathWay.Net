@@ -61,7 +61,6 @@ namespace VetFlow.Server.Controllers.auth
                 }
 
                 _logger.LogInformation("Successful login for email: {Email}", request.Email);
-
                 return Ok(new LoginResponse
                 {
                     TokenType = body.TokenType,
@@ -76,8 +75,7 @@ namespace VetFlow.Server.Controllers.auth
             catch (HttpRequestException ex)
             {
                 _logger.LogError(ex, "HTTP request error during login for email: {Email}", request.Email);
-
-                return StatusCode(500, new ErrorResponse
+                return StatusCode(statusCode: 500, new ErrorResponse
                 {
                     Error = "server_error",
                     ErrorDescription = "Failed to communicate with authentication service"
@@ -86,7 +84,7 @@ namespace VetFlow.Server.Controllers.auth
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error during login for email: {Email}", request.Email);
-                return StatusCode(500, new
+                return StatusCode(500, new ErrorResponse
                 {
                     Error = "server_error",
                     ErrorDescription = "An unexpected error occurred during login"

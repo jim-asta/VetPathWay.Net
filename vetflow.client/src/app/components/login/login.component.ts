@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { ForgotPasswordComponent } from '@components/forgot-password/forgot-password.component';
+import { Idp } from '@enums/idp';
 
 // PrimeNG Imports
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -39,7 +40,9 @@ import { DialogModule } from 'primeng/dialog';
   providers: [MessageService, DialogService]
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  constructor(private fb: FormBuilder, private router: Router, private messageService: MessageService, private authService: AuthService, private dialogService: DialogService) { }
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private messageService: MessageService, private authService: AuthService, private dialogService: DialogService) { }
+
+  readonly Idp = Idp;   // Expose Idp enum to template
 
   loginForm!: FormGroup;
   isLoading: boolean = false;
@@ -48,7 +51,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeForm();
     this.email?.setValue(localStorage.getItem('rememberMeEmail'));
-  }
+    this.handleSsoCallback();
+}
 
   private initializeForm(): void {
     this.loginForm = this.fb.nonNullable.group({    // Don't allow any values to be null
@@ -59,6 +63,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.handleSsoCallback();
+
     if (('credentials' in navigator)) {
 
       const opts = { password: true, mediation: 'optional' } as any;
@@ -131,12 +137,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  loginGoogle() {
-    this.authService.loginSso('google');
-  }
-
-  loginMicrosoft() {
-    this.authService.loginSso('microsoft');
+  onLoginSso(idp: Idp) {
+    this.authService.loginSso(idp);
   }
 
   onForgotPassword(event: Event): void {
@@ -157,18 +159,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
 
-  socialLogin(provider: string): void {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Social Login',
-      detail: `Redirecting to ${provider} login...`,
-      life: 3000
-    });
-
-    // Implement social login logic here
-    console.log(`Attempting ${provider} login`);
-  }
-
   private markFormGroupTouched(formGroup: FormGroup): void {
     Object.keys(formGroup.controls).forEach(key => {
       const control = formGroup.get(key);
@@ -176,6 +166,33 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);
+      }
+    });
+  }
+
+  private handleSsoCallback(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params['token']) {
+        this.authService.handleSsoCallback(params['token']);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'SSO login successful! Redirecting...',
+          life: 3000
+        });
+        // Clean URL then navigate — avoids token sitting in browser history
+        this.router.navigate(['/dashboard'], { replaceUrl: true });
+      }
+
+      if (params['error'] === 'sso_failed') {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'SSO Login Failed',
+          detail: 'Something went wrong during SSO login. Please try again.',
+          life: 5000
+        });
+        // Clean the error param out of the URL
+        this.router.navigate(['/login'], { replaceUrl: true });
       }
     });
   }
