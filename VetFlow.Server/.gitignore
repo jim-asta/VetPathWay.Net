@@ -1,0 +1,17 @@
+# .NET / C#
+bin/
+obj/
+*.user
+*.suo
+*.cache
+appsettings.Development.json
+
+# Node / JavaScript (for client)
+node_modules/
+dist/
+.env.local
+
+# IDE
+.vs/
+.vscode/
+.idea/

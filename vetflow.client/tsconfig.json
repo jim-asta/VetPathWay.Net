@@ -13,10 +13,19 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022"
+    "module": "ES2022",
+    "baseUrl": "src",
+    "paths": {
+      "@app/*": [ "app/*" ],
+      "@core/*": [ "app/core/*" ],
+      "@services/*": [ "app/core/services/*" ],
+      "@DTOs/*": [ "app/core/DTOs/*" ],
+      "@components/*": [ "app/components/*" ],
+      "@enums/*": [ "app/core/enums/*" ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

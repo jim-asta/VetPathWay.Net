@@ -7,8 +7,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = tokenService.getAccessToken();
 
   // Skip adding token for login/signup endpoints
-  if (req.url.includes('/api/login') ||
-    req.url.includes('/api/signup') ||
+  if (req.url.includes('api/login') ||
+    req.url.includes('/api/createaccount') ||
+    req.url.includes('/api/forgotpassword') ||
     req.url.includes('/api/sso-redirect')) {
     return next(req);
   }

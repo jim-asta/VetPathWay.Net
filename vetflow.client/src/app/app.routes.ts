@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
-import { AuthLayoutComponent } from './components/layouts/auth-layout/auth-layout.component';
-import { LoginComponent } from './components/login/login.component';
-import { SignupComponent } from './components/signup/signup.component';
-import { disableGuard } from './core/guards/disable.guard';
-import { CreateAccountComponent } from './components/create-account/create-account.component';
+import { AuthLayoutComponent } from '@components/layouts/auth-layout/auth-layout.component';
+import { LoginComponent } from '@components/login/login.component';
+import { SignupComponent } from '@components/signup/signup.component';
+import { disableGuard } from '@core/guards/disable.guard';
+import { CreateAccountComponent } from '@components/create-account/create-account.component';
+import { authGuard } from '@core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -22,13 +23,13 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'dashboard', loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent )
+    path: 'dashboard', canActivate: [authGuard], loadComponent: () => import('@components/dashboard/dashboard.component').then(m => m.DashboardComponent )
   },
   {
-    path: 'privacy-policy', canActivate: [disableGuard], loadComponent: () => import('./components/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent)
+    path: 'privacy-policy', canActivate: [disableGuard], loadComponent: () => import('@components/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent)
   },
   {
-    path: 'terms-of-service', canActivate: [disableGuard], loadComponent: () => import('./components/terms-of-service/terms-of-service.component').then(m => m.TermsOfServiceComponent )
+    path: 'terms-of-service', canActivate: [disableGuard], loadComponent: () => import('@components/terms-of-service/terms-of-service.component').then(m => m.TermsOfServiceComponent )
   },
   {
     path: '**',
