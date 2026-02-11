@@ -1,4 +1,4 @@
-﻿module.exports = function (config) {
+module.exports = function (config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
@@ -38,7 +38,22 @@
     singleRun: false,
     restartOnFileChange: true,
     listenAddress: 'localhost',
-    hostname: 'localhost'
+    hostname: 'localhost',
+    browsers: ['ChromeDebugging'],
+    singleRun: false,
+    autoWatch: true,
+    customLaunchers: {
+      ChromeDebugging: {
+        base: 'Chrome',
+        flags: [
+          '--remote-debugging-port=9222',
+          '--remote-allow-origins=*',
+          '--no-sandbox',
+          '--disable-gpu',
+          '--remote-debugging-address=0.0.0.0'        ],
+        debug: true
+      }
+    }
   });
 };
 

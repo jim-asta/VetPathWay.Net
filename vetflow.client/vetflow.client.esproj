@@ -1,7 +1,10 @@
 <Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.2752196">
   <PropertyGroup>
     <StartupCommand>npm start</StartupCommand>
+    <TestCommand>npm run test:debug</TestCommand>
+    <BuildCommand>npm run build</BuildCommand>
     <JavaScriptTestFramework>Jasmine</JavaScriptTestFramework>
+    <JavaScriptTestRoot>src\</JavaScriptTestRoot>
     <!-- Allows the build (or compile) script located on package.json to run on Build -->
     <ShouldRunBuildScript>false</ShouldRunBuildScript>
     <!-- Folder where production build objects will be placed -->
