@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -79,6 +79,8 @@ export class CreateAccountComponent implements OnInit, OnDestroy {
   }
 
   onSignup(): void {
+    if (this.isLoading) return;   // Prevent double submit
+
     if (this.createAccountForm.valid) {
       this.isLoading = true;
 

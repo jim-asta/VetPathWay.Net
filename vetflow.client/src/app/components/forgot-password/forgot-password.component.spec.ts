@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ForgotPasswordComponent } from './forgot-password.component';
+import { testProviders } from '../../app.config';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { MessageService } from 'primeng/api';
 
 describe('ForgotPasswordComponent', () => {
   let component: ForgotPasswordComponent;
@@ -8,7 +11,30 @@ describe('ForgotPasswordComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ForgotPasswordComponent]
+      imports: [ForgotPasswordComponent],
+      providers: [
+        ...testProviders,
+        {
+          provide: DynamicDialogRef,
+          useValue: {
+            close: jasmine.createSpy('close'),
+            destroy: jasmine.createSpy('destroy')
+          }
+        },
+        {
+          provide: DynamicDialogConfig,
+          useValue: {
+            data: {}
+          }
+        },
+        {
+          provide: MessageService,
+          useValue: {
+            add: jasmine.createSpy('add'),
+            clear: jasmine.createSpy('clear')
+          }
+        },
+      ]
     })
     .compileComponents();
 

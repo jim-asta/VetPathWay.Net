@@ -1,6 +1,7 @@
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { testProviders } from './app.config';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -9,8 +10,8 @@ describe('AppComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      imports: [HttpClientTestingModule]
+      imports: [AppComponent],
+      providers: [testProviders]
     }).compileComponents();
   });
 
