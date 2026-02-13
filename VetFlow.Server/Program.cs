@@ -43,11 +43,12 @@ namespace VetFlow.Server
                          System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
                  });
 
-            builder.Services.AddSingleton<GraphService>();
+            builder.Services.AddSingleton<IGraphService, GraphService>();
             builder.Services.AddOpenApi();
             builder.Services.AddHttpClient();
             builder.Services.Configure<MailerSendOptions>(_config.GetSection("MailerSend"));
             builder.Services.AddMailerSend();
+            builder.Services.AddScoped<IMailerSendService, MailerSendServiceWrapper>();     // To allow mocking in unit tests
 
             // JWT Bearer authentication
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

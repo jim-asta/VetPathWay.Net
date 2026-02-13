@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using VetFlow.Server.DTOs;
 using VetFlow.Server.Services;
 
@@ -6,11 +7,11 @@ namespace VetFlow.Server.Controllers.auth
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LoginController(IHttpClientFactory factory, IConfiguration config, GraphService graphService, ILogger<LoginController> logger) : ControllerBase
+    public class LoginController(IHttpClientFactory factory, IConfiguration config, IGraphService graphService, ILogger<LoginController> logger) : ControllerBase
     {
         private readonly IHttpClientFactory _httpFactory = factory;
         private readonly IConfiguration _config = config;
-        private readonly GraphService _graphService = graphService;
+        private readonly IGraphService _graphService = graphService;
         private readonly ILogger<LoginController> _logger = logger;
 
         [HttpPost]
@@ -48,7 +49,7 @@ namespace VetFlow.Server.Controllers.auth
                 var response = await client.PostAsync(tokenUrl, content);
                 var body = await response.Content.ReadFromJsonAsync<Token>();
 
-                if (!response.IsSuccessStatusCode || body == null)
+                if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogWarning("Authentication failed for email: {Email}. Error: {Error}", 
                         request.Email, body?.Error ?? "unknown");
@@ -75,16 +76,25 @@ namespace VetFlow.Server.Controllers.auth
             catch (HttpRequestException ex)
             {
                 _logger.LogError(ex, "HTTP request error during login for email: {Email}", request.Email);
-                return StatusCode(statusCode: 500, new ErrorResponse
+                return StatusCode(statusCode: StatusCodes.Status500InternalServerError, new ErrorResponse
                 {
                     Error = "server_error",
                     ErrorDescription = "Failed to communicate with authentication service"
                 });
             }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "Invalid response from authentication service for email: {Email}", request.Email);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse
+                {
+                    Error = "server_error",
+                    ErrorDescription = "Invalid response from authentication service"
+                });
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error during login for email: {Email}", request.Email);
-                return StatusCode(500, new ErrorResponse
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse
                 {
                     Error = "server_error",
                     ErrorDescription = "An unexpected error occurred during login"

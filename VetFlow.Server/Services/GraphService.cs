@@ -4,7 +4,7 @@ using Azure.Identity;
 
 namespace VetFlow.Server.Services
 {
-    public class GraphService
+    public class GraphService : IGraphService
     {
         private readonly GraphServiceClient _graphClient;
         private readonly IConfiguration _config;

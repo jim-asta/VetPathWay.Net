@@ -76,7 +76,7 @@ namespace VetFlow.Server.Controllers.auth
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error during SSO redirect for email: {Email}", email);
-                return StatusCode(statusCode: 500, new ErrorResponse
+                return StatusCode(statusCode: StatusCodes.Status500InternalServerError, new ErrorResponse
                 {
                     Error = "sso_redirect_failed",
                     ErrorDescription = "An error occurred while processing the SSO redirect. Please try again."

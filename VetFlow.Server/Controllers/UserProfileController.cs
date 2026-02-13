@@ -11,10 +11,10 @@ namespace VetFlow.Server.Controllers
     [Route("api/[controller]")]
     public class UserProfileController : ControllerBase
     {
-        private readonly GraphService _graphService;
+        private readonly IGraphService _graphService;
         private readonly ILogger<UserProfileController> _logger;
 
-        public UserProfileController(GraphService graphService, ILogger<UserProfileController> logger)
+        public UserProfileController(IGraphService graphService, ILogger<UserProfileController> logger)
         {
             _graphService = graphService;
             _logger = logger;
@@ -52,7 +52,7 @@ namespace VetFlow.Server.Controllers
             {
                 _logger.LogError(ex, "Unexpected error while retrieving user profile");
 
-                return StatusCode(500, new ErrorResponse
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResponse
                 {
                     Error = "server_error",
                     ErrorDescription = "An unexpected error occurred while retrieving user profile"

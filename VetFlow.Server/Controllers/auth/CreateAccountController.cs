@@ -13,9 +13,9 @@ namespace VetFlow.Server.Controllers.auth
     {
         private readonly IConfiguration _config;
         private readonly ILogger<CreateAccountController> _logger;
-        private readonly GraphService _graphService;
+        private readonly IGraphService _graphService;
 
-        public CreateAccountController(GraphService graphService, IConfiguration config, ILogger<CreateAccountController> logger)
+        public CreateAccountController(IGraphService graphService, IConfiguration config, ILogger<CreateAccountController> logger)
         {
             _graphService = graphService;
             _config = config;
@@ -39,7 +39,7 @@ namespace VetFlow.Server.Controllers.auth
                     if ((createdUser = await _graphService.CreateUserAsync(request.Email, request.Password)) == null)
                     {
                         _logger.LogError("Failed to create user for email: " + request.Email);
-                        return StatusCode(500, new CreateAccountResponse
+                        return StatusCode(StatusCodes.Status500InternalServerError, new CreateAccountResponse
                         {
                             Success = false,
                             Message = "Failed to create user for email: " + request.Email
@@ -81,7 +81,7 @@ namespace VetFlow.Server.Controllers.auth
             {
                 _logger.LogError(ex, "Unexpected error while creating user account: {Email}", request.Email);
 
-                return StatusCode(500, new CreateAccountResponse
+                return StatusCode(StatusCodes.Status500InternalServerError, new CreateAccountResponse
                 {
                     Success = false,
                     Message = "An unexpected error occurred while creating your account"
