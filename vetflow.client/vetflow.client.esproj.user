@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebuggerFlavor>LaunchJsonDebugger</DebuggerFlavor>
+    <LaunchJsonTarget>{
+  "name": "localhost (Chrome)",
+  "type": "chrome",
+  "request": "launch",
+  "url": "https://localhost:4200",
+  "webRoot": "C:\\Users\\jasta\\source\\repos\\VetFlow\\vetflow.client"
+}</LaunchJsonTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugTests|AnyCPU'">
+    <DebuggerFlavor>LaunchJsonDebugger</DebuggerFlavor>
+    <LaunchJsonTarget>{
+  "name": "localhost (Chrome)",
+  "type": "chrome",
+  "request": "launch",
+  "url": "https://localhost:4200",
+  "webRoot": "C:\\Users\\jasta\\source\\repos\\VetFlow\\vetflow.client"
+}</LaunchJsonTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebuggerFlavor>LaunchJsonDebugger</DebuggerFlavor>
+    <LaunchJsonTarget>{
+  "name": "Debug Angular Tests (Karma)",
+  "type": "chrome",
+  "request": "launch",
+  "url": "http://localhost:9876/debug.html",
+  "userDataDir": "C:\\Users\\jasta\\source\\repos\\VetFlow\\vetflow.client/.vscode/chrome-debug-user-data",
+  "webRoot": "C:\\Users\\jasta\\source\\repos\\VetFlow\\vetflow.client",
+  "preLaunchTask": "run-karma-debug",
+  "sourceMaps": true,
+  "timeout": 120000,
+  "sourceMapPathOverrides": {
+    "webpack:///*": "${webRoot}/*",
+    "webpack:///./*": "${webRoot}/*",
+    "webpack:///src/*": "${webRoot}/src/*"
+  }
+}</LaunchJsonTarget>
+  </PropertyGroup>
+</Project>

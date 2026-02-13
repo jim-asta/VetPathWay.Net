@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "Vetflow Client & Server",
+    "Projects": [
+      {
+        "Path": "VetFlow.Server\\VetFlow.Server.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "vetflow.client\\vetflow.client.esproj",
+        "Action": "Start",
+        "DebugTarget": "localhost (Chrome)"
+      }
+    ]
+  }
+]
