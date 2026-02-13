@@ -6,7 +6,6 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { providePrimeNG } from 'primeng/config';
@@ -19,7 +18,6 @@ import Aura from '@primeng/themes/aura'; // Import the Aura preset
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule, HttpClientModule,
-    AppRoutingModule,
     ButtonModule,
     InputTextModule,
     DialogModule,
